@@ -16,24 +16,27 @@ permissions:
 
 jobs:
   update:
-    if: startsWith(github.repository, 'Homebrew/')
+    if: github.repository_owner == 'Homebrew'
     strategy:
       matrix:
         runner:
-          - macos-11
-          - macos-12
+          - macos-14
+          - macos-15
+          - macos-15-intel
+          - macos-26
           - ubuntu-latest
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
         with:
-          test-bot: false
+          core: false
+          cask: false
 
       - name: Cache Homebrew Gems
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ${{ steps.set-up-homebrew.outputs.gems-path }}
           key: ${{ matrix.runner }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
@@ -41,5 +44,4 @@ jobs:
 
       - name: Install Homebrew Gems
         id: gems
-        run: brew install-bundler-gems
-        if: steps.cache.outputs.cache-hit != 'true'
+        run: brew install-bundler-gems --groups=audit,style

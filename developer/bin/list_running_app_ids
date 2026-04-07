@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# Standalone scripts are fine to use global variables
+# rubocop:disable Style/GlobalVars
+
 #
 # list_running_app_ids
 #
@@ -10,14 +13,12 @@
 ###
 
 require "open3"
-require "set"
 require "io/console"
 
 ###
 ### globals
 ###
 
-# rubocop:disable Style/GlobalVars
 $opt_test = nil
 $COLUMNS = IO.console.winsize.last
 
